@@ -1,0 +1,4 @@
+project_id = "kupffawczbulejoushyg"
+
+[functions.career-recommendation]
+verify_jwt = true
