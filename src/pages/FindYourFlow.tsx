@@ -6,9 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, TrendingUp, Brain, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const FindYourFlow = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     marks: "",
@@ -30,9 +35,36 @@ const FindYourFlow = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    if (formData.name && formData.marks && formData.interests.length > 0 && formData.skills.length > 0 && formData.emotionalState) {
+  const handleSubmit = async () => {
+    if (!formData.name || !formData.marks || formData.interests.length === 0 || formData.skills.length === 0 || !formData.emotionalState) {
+      return;
+    }
+
+    if (!user) {
+      toast.error("Please login to start your assessment");
+      navigate("/auth");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from("flow_assessments").insert({
+        user_id: user.id,
+        name: formData.name,
+        marks: parseInt(formData.marks),
+        interests: formData.interests,
+        skills: formData.skills,
+        emotional_state: formData.emotionalState,
+      });
+
+      if (error) throw error;
+
+      toast.success("Assessment started!");
       navigate("/flow-assessment", { state: { userData: formData } });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to save assessment");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -153,9 +185,9 @@ const FindYourFlow = () => {
               onClick={handleSubmit}
               className="w-full"
               size="lg"
-              disabled={!formData.name || !formData.marks || formData.interests.length === 0 || formData.skills.length === 0 || !formData.emotionalState}
+              disabled={isSubmitting || !formData.name || !formData.marks || formData.interests.length === 0 || formData.skills.length === 0 || !formData.emotionalState}
             >
-              Start Your Journey
+              {isSubmitting ? "Saving..." : "Start Your Journey"}
             </Button>
           </CardContent>
         </Card>

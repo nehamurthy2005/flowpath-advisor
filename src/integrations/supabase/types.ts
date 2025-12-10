@@ -97,6 +97,39 @@ export type Database = {
           },
         ]
       }
+      flow_assessments: {
+        Row: {
+          created_at: string
+          emotional_state: string
+          id: string
+          interests: string[]
+          marks: number
+          name: string
+          skills: string[]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emotional_state: string
+          id?: string
+          interests?: string[]
+          marks: number
+          name: string
+          skills?: string[]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emotional_state?: string
+          id?: string
+          interests?: string[]
+          marks?: number
+          name?: string
+          skills?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_career_selections: {
         Row: {
           id: string
