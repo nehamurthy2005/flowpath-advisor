@@ -2,10 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Compass, BookOpen, FileText, ArrowRight, CheckCircle2, Brain, Sparkles } from "lucide-react";
-
 export default function Home() {
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-hero py-20 md:py-32">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjEiLz48L2c+PC9zdmc+')] opacity-20"></div>
@@ -19,10 +17,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/quiz">
-                <Button size="lg" variant="secondary" className="w-full sm:w-auto shadow-xl hover:shadow-2xl transition-all text-lg">
-                  <Compass className="w-5 h-5 mr-2" />
-                  Quick Quiz
-                </Button>
+                
               </Link>
               <Link to="/streams">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 text-white border-white/20 hover:bg-white/20 shadow-xl text-lg">
@@ -54,34 +49,30 @@ export default function Home() {
             Your Journey in 3 Simple Steps
           </h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {[
-              {
-                icon: Compass,
-                title: "1. Discover",
-                description: "Take our intelligent career quiz to understand your interests, strengths, and ideal career paths.",
-                color: "bg-primary",
-              },
-              {
-                icon: BookOpen,
-                title: "2. Choose",
-                description: "Explore detailed information about different streams and the exciting career opportunities they offer.",
-                color: "bg-secondary",
-              },
-              {
-                icon: FileText,
-                title: "3. Build",
-                description: "Create a professional resume with our easy-to-use builder and get ready to pursue your dream career.",
-                color: "bg-accent",
-              },
-            ].map((step, index) => (
-              <Card key={index} className="p-6 hover:shadow-lg transition-all animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+            {[{
+            icon: Compass,
+            title: "1. Discover",
+            description: "Take our intelligent career quiz to understand your interests, strengths, and ideal career paths.",
+            color: "bg-primary"
+          }, {
+            icon: BookOpen,
+            title: "2. Choose",
+            description: "Explore detailed information about different streams and the exciting career opportunities they offer.",
+            color: "bg-secondary"
+          }, {
+            icon: FileText,
+            title: "3. Build",
+            description: "Create a professional resume with our easy-to-use builder and get ready to pursue your dream career.",
+            color: "bg-accent"
+          }].map((step, index) => <Card key={index} className="p-6 hover:shadow-lg transition-all animate-fade-in" style={{
+            animationDelay: `${index * 0.1}s`
+          }}>
                 <div className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center mb-4 shadow-md`}>
                   <step.icon className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold mb-3">{step.title}</h3>
                 <p className="text-muted-foreground">{step.description}</p>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -99,18 +90,10 @@ export default function Home() {
                   We understand that choosing the right career path can be overwhelming. That's why we've created a platform that guides you every step of the way.
                 </p>
                 <ul className="space-y-4">
-                  {[
-                    "AI-powered career assessment",
-                    "Detailed stream and career information",
-                    "Professional resume templates",
-                    "Personalized recommendations",
-                    "Career roadmaps and guidance",
-                  ].map((feature, index) => (
-                    <li key={index} className="flex items-start gap-3">
+                  {["AI-powered career assessment", "Detailed stream and career information", "Professional resume templates", "Personalized recommendations", "Career roadmaps and guidance"].map((feature, index) => <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
                       <span className="text-lg">{feature}</span>
-                    </li>
-                  ))}
+                    </li>)}
                 </ul>
               </div>
               <Card className="p-8 bg-gradient-primary text-white animate-fade-in shadow-xl">
@@ -147,8 +130,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link to="/resume-builder">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto shadow-md">
-                <FileText className="w-5 h-5 mr-2" />
+              <Button size="lg" variant="outline" className="w-full sm:w-auto shadow-md">Build Resume<FileText className="w-5 h-5 mr-2" />
                 Build Resume
               </Button>
             </Link>
@@ -167,6 +149,5 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 }
