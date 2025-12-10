@@ -2,3 +2,6 @@ project_id = "kupffawczbulejoushyg"
 
 [functions.career-recommendation]
 verify_jwt = true
+
+[functions.analyze-resume]
+verify_jwt = false
