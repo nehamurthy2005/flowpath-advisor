@@ -1,34 +1,14 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 
-const createSupabaseClient = (): SupabaseClient<Database> => {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+// Use environment variables with fallback to known values
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://kupffawczbulejoushyg.supabase.co';
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1cGZmYXdjemJ1bGVqb3VzaHlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzNDU4OTAsImV4cCI6MjA3NzkyMTg5MH0.AoNsBZreOioXQX0B5xSg2efXkR_38wMnErgo3rLJgBk';
 
-  if (!url || !key) {
-    // Return a mock client that won't crash the app
-    // This allows the app to load even if env vars are temporarily unavailable
-    console.warn('Supabase environment variables not yet available, using fallback');
-    return createClient<Database>(
-      'https://placeholder.supabase.co',
-      'placeholder-key',
-      {
-        auth: {
-          storage: localStorage,
-          persistSession: true,
-          autoRefreshToken: true,
-        }
-      }
-    );
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    storage: localStorage,
+    persistSession: true,
+    autoRefreshToken: true,
   }
-
-  return createClient<Database>(url, key, {
-    auth: {
-      storage: localStorage,
-      persistSession: true,
-      autoRefreshToken: true,
-    }
-  });
-};
-
-export const supabase = createSupabaseClient();
+});
