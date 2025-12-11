@@ -6,6 +6,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import * as pdfjsLib from 'pdfjs-dist';
+
+// Set up PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 type ScanSection = {
   original: string;
@@ -27,52 +31,53 @@ export default function Scanner() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScanResult | null>(null);
+  const [extractedText, setExtractedText] = useState<string>("");
   const [sidePane, setSidePane] = useState<{ section: string; original: string; improved?: string; loading?: boolean } | null>(null);
   const [improvingSection, setImprovingSection] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const extractTextFromPDF = async (file: File): Promise<string> => {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .map((item: any) => item.str)
+        .join(' ');
+      fullText += pageText + '\n';
+    }
+    
+    return fullText.trim();
+  };
+
   const extractTextFromFile = async (file: File): Promise<string> => {
+    if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+      return await extractTextFromPDF(file);
+    }
+    
+    // For DOCX files - read as text
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
-      reader.onload = async (e) => {
+      reader.onload = (e) => {
         const content = e.target?.result;
-        
-        if (file.type === 'application/pdf') {
-          // For PDF, we'll send raw text extraction request
-          // In production, you'd use a PDF library or backend service
-          // For now, we'll read as text and clean it up
-          if (typeof content === 'string') {
-            resolve(content);
-          } else if (content instanceof ArrayBuffer) {
-            // Convert ArrayBuffer to base64 for AI processing
-            const uint8Array = new Uint8Array(content);
-            let binary = '';
-            uint8Array.forEach(byte => binary += String.fromCharCode(byte));
-            const base64 = btoa(binary);
-            resolve(`[PDF Content Base64: This is a PDF file. Please extract and analyze the resume content from it.]\n\nNote: For best results with PDF files, the content below represents the raw data. Extract key resume sections like Summary, Experience, Education, Skills, and Projects.\n\nFile: ${file.name}`);
-          }
+        if (typeof content === 'string') {
+          // Clean up XML tags from DOCX
+          const cleanText = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+          resolve(cleanText);
+        } else if (content instanceof ArrayBuffer) {
+          const decoder = new TextDecoder('utf-8');
+          const text = decoder.decode(content);
+          const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+          resolve(cleanText);
         } else {
-          // For DOCX and other text-based formats
-          if (typeof content === 'string') {
-            resolve(content);
-          } else if (content instanceof ArrayBuffer) {
-            const decoder = new TextDecoder('utf-8');
-            const text = decoder.decode(content);
-            // Clean up XML tags from DOCX
-            const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-            resolve(cleanText);
-          }
+          resolve('');
         }
       };
-      
       reader.onerror = () => reject(new Error('Failed to read file'));
-      
-      if (file.type === 'application/pdf') {
-        reader.readAsArrayBuffer(file);
-      } else {
-        reader.readAsText(file);
-      }
+      reader.readAsText(file);
     });
   };
 
@@ -99,6 +104,7 @@ export default function Scanner() {
     
     setLoading(true);
     setResult(null);
+    setExtractedText("");
 
     try {
       toast.info('Extracting resume content...');
@@ -108,11 +114,12 @@ export default function Scanner() {
         throw new Error('Could not extract sufficient text from the file. Please try a different format.');
       }
 
+      setExtractedText(resumeText);
       toast.info('Analyzing with AI...');
       
       const { data, error } = await supabase.functions.invoke('analyze-resume', {
         body: { 
-          resumeText,
+          resumeText: resumeText.substring(0, 8000), // Limit text to save credits
           action: 'analyze'
         }
       });
@@ -268,6 +275,16 @@ export default function Scanner() {
             </div>
           )}
         </div>
+
+        {/* Extracted Text Preview */}
+        {extractedText && !result && (
+          <Card className="mt-6 p-6">
+            <h3 className="text-lg font-semibold mb-3">Extracted Content</h3>
+            <div className="max-h-64 overflow-y-auto p-4 bg-muted/50 rounded-lg text-sm whitespace-pre-wrap">
+              {extractedText.substring(0, 2000)}{extractedText.length > 2000 ? '...' : ''}
+            </div>
+          </Card>
+        )}
 
         {/* Results */}
         {result && (
