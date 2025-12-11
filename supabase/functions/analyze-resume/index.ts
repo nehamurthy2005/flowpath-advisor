@@ -24,30 +24,30 @@ serve(async (req) => {
     if (action === 'analyze') {
       systemPrompt = `You are an expert ATS (Applicant Tracking System) resume analyzer. Analyze resumes and provide detailed feedback.
       
-You MUST respond with valid JSON in this exact format:
+You MUST respond with valid JSON in this exact format. ALL SCORES MUST BE INTEGERS FROM 0 TO 100 (NOT decimals, NOT single digits like 9 - use 90 instead):
 {
-  "overall_score": <number 0-100>,
+  "overall_score": <integer 0-100, e.g. 75>,
   "section_scores": {
-    "formatting": <number>,
-    "keywords": <number>,
-    "experience": <number>,
-    "skills": <number>,
-    "grammar": <number>
+    "formatting": <integer 0-100, e.g. 80>,
+    "keywords": <integer 0-100, e.g. 65>,
+    "experience": <integer 0-100, e.g. 85>,
+    "skills": <integer 0-100, e.g. 70>,
+    "grammar": <integer 0-100, e.g. 90>
   },
   "sections": {
-    "summary": {"original": "<extracted text>", "score": <number>, "feedback": "<what's good and what's missing>"},
-    "experience": {"original": "<extracted text>", "score": <number>, "feedback": "<feedback>"},
-    "education": {"original": "<extracted text>", "score": <number>, "feedback": "<feedback>"},
-    "skills": {"original": "<extracted text>", "score": <number>, "feedback": "<feedback>"},
-    "projects": {"original": "<extracted text>", "score": <number>, "feedback": "<feedback>"}
+    "summary": {"original": "<extracted text from resume>", "score": <integer 0-100>, "feedback": "<specific feedback>"},
+    "experience": {"original": "<extracted text from resume>", "score": <integer 0-100>, "feedback": "<specific feedback>"},
+    "education": {"original": "<extracted text from resume>", "score": <integer 0-100>, "feedback": "<specific feedback>"},
+    "skills": {"original": "<extracted text from resume>", "score": <integer 0-100>, "feedback": "<specific feedback>"},
+    "projects": {"original": "<extracted text from resume>", "score": <integer 0-100>, "feedback": "<specific feedback>"}
   },
-  "missing_keywords": ["<keyword1>", "<keyword2>"],
-  "improvement_suggestions": ["<suggestion1>", "<suggestion2>", "<suggestion3>"]
+  "missing_keywords": ["keyword1", "keyword2", "keyword3"],
+  "improvement_suggestions": ["suggestion1", "suggestion2", "suggestion3"]
 }
 
-Only include sections that exist in the resume. Be specific and actionable in feedback.`;
+CRITICAL: All scores MUST be realistic percentages between 0-100. A score of 9 is almost zero - if you mean 90%, write 90. Extract ACTUAL content from the resume for each section's "original" field. Only include sections that exist in the resume.`;
 
-      userPrompt = `Analyze this resume and provide ATS score and detailed feedback:\n\n${resumeText}`;
+      userPrompt = `Analyze this resume text and provide ATS compatibility score (0-100) with detailed section-by-section feedback. Extract the actual content for each section:\n\n${resumeText}`;
     } else if (action === 'improve') {
       systemPrompt = `You are an expert resume writer. Improve resume sections to be more impactful, ATS-friendly, and professional.
       
@@ -127,6 +127,31 @@ Respond with JSON: {"improved": "<improved content>"}`;
         throw new Error('Could not parse AI response as JSON');
       }
     }
+
+    // Validate and fix scores - if any score is < 15, multiply by 10 (likely meant as percentage)
+    const fixScore = (score: number): number => {
+      if (typeof score !== 'number') return 50;
+      if (score < 15 && score > 0) return Math.min(score * 10, 100);
+      return Math.min(Math.max(score, 0), 100);
+    };
+
+    if (result.overall_score) {
+      result.overall_score = fixScore(result.overall_score);
+    }
+    if (result.section_scores) {
+      for (const key of Object.keys(result.section_scores)) {
+        result.section_scores[key] = fixScore(result.section_scores[key]);
+      }
+    }
+    if (result.sections) {
+      for (const key of Object.keys(result.sections)) {
+        if (result.sections[key]?.score) {
+          result.sections[key].score = fixScore(result.sections[key].score);
+        }
+      }
+    }
+
+    console.log('Processed result:', JSON.stringify(result));
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
