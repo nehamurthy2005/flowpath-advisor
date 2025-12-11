@@ -130,9 +130,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link to="/resume-builder">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto shadow-md">Build Resume<FileText className="w-5 h-5 mr-2" />
-                Build Resume
-              </Button>
+              
             </Link>
             <Link to="/scanner">
               <Button size="lg" variant="secondary" className="w-full sm:w-auto shadow-md">
