@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import AIChatbot from "@/components/AIChatbot";
+
 const navItems = [
   { name: "Home", path: "/", icon: Home, public: true },
   { name: "AI Guide", path: "/find-your-flow", icon: Compass, public: true },
@@ -166,9 +166,6 @@ export const Layout = () => {
       <main className="pt-16">
         <Outlet />
       </main>
-
-      {/* AI Chatbot */}
-      <AIChatbot />
 
       {/* Footer */}
       <footer className="bg-card border-t border-border py-12">
