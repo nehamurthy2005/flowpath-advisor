@@ -354,7 +354,7 @@ ${prediction.roadmap?.projects?.map((p: string) => `    • ${p}`).join("\n")}
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-3 text-orange-600 dark:text-orange-400">→ Skills to Improve</h4>
+                  <h4 className="font-semibold mb-3 text-accent-foreground">→ Skills to Improve</h4>
                   <div className="flex flex-wrap gap-2">
                     {prediction.skillsToImprove?.map((skill: string, idx: number) => (
                       <Badge key={idx} variant="outline">{skill}</Badge>
