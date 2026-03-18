@@ -508,7 +508,7 @@ ${prediction.roadmap?.projects?.map((p: string) => `    • ${p}`).join("\n")}
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold mb-3 text-green-600 dark:text-green-400 flex items-center gap-2">
+                  <h4 className="font-semibold mb-3 text-primary flex items-center gap-2">
                     <TrendingUp className="h-4 w-4" /> Growing
                   </h4>
                   <div className="space-y-2">
