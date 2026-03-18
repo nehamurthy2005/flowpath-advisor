@@ -16,9 +16,6 @@ export default function Home() {
               Discover your passion, choose your stream, and shape your future
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/quiz">
-                
-              </Link>
               <Link to="/streams">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 text-white border-white/20 hover:bg-white/20 shadow-xl text-lg">
                   <BookOpen className="w-5 h-5 mr-2" />
