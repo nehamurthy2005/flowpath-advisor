@@ -53,6 +53,13 @@ const FlowAssessment = () => {
         setPrediction(result);
         setIsAnalyzing(false);
         setShowResults(true);
+
+        // Store result for returning users
+        localStorage.setItem("flow_assessment_result", JSON.stringify({
+          userData,
+          prediction: result,
+          timestamp: new Date().toISOString(),
+        }));
       }, 2000);
     }
   };
