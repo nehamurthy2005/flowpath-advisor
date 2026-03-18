@@ -98,7 +98,7 @@ export default function Home() {
                 <p className="mb-6 text-white/90">
                   Join thousands of students who have discovered their perfect career path with Find Your Flow.
                 </p>
-                <Link to="/quiz">
+                <Link to="/find-your-flow">
                   <Button size="lg" variant="secondary" className="w-full shadow-lg hover:shadow-xl transition-all">
                     Start Your Journey
                     <ArrowRight className="w-5 h-5 ml-2" />
