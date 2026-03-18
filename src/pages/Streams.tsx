@@ -97,9 +97,9 @@ export default function Streams() {
           <p className="text-white/90 mb-6">
             Take our intelligent career quiz to discover which stream aligns best with your interests and strengths.
           </p>
-          <Link to="/quiz">
+          <Link to="/find-your-flow">
             <Button size="lg" variant="secondary" className="shadow-lg hover:shadow-xl transition-all">
-              Take the Career Quiz
+              Try AI Career Guide
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
