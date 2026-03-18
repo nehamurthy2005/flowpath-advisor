@@ -521,7 +521,7 @@ ${prediction.roadmap?.projects?.map((p: string) => `    • ${p}`).join("\n")}
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-3 text-orange-600 dark:text-orange-400 flex items-center gap-2">
+                  <h4 className="font-semibold mb-3 text-accent-foreground flex items-center gap-2">
                     <TrendingDown className="h-4 w-4" /> Declining
                   </h4>
                   <div className="space-y-2">
