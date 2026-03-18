@@ -9,7 +9,7 @@ import AIChatbot from "@/components/AIChatbot";
 const navItems = [
   { name: "Home", path: "/", icon: Home, public: true },
   { name: "AI Guide", path: "/find-your-flow", icon: Compass, public: true },
-  { name: "Career Quiz", path: "/quiz", icon: Compass, public: true },
+  
   { name: "Streams", path: "/streams", icon: BookOpen, public: true },
   { name: "Resume Builder", path: "/resume-builder", icon: FileText, public: false },
   { name: "About", path: "/about", icon: Info, public: true },
