@@ -120,12 +120,6 @@ export default function Home() {
             Take the first step towards a fulfilling career. Our platform is designed to help you make informed decisions about your future.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/quiz">
-              <Button size="lg" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all">
-                <Compass className="w-5 h-5 mr-2" />
-                Take Career Quiz
-              </Button>
-            </Link>
             <Link to="/resume-builder">
               
             </Link>

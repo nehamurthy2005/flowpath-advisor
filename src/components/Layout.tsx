@@ -188,7 +188,7 @@ export const Layout = () => {
             <div>
               <h3 className="font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/quiz" className="hover:text-primary transition-colors">Career Quiz</Link></li>
+                <li><Link to="/find-your-flow" className="hover:text-primary transition-colors">AI Guide</Link></li>
                 <li><Link to="/streams" className="hover:text-primary transition-colors">Explore Streams</Link></li>
                 <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
                 <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
